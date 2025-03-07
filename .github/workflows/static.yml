@@ -38,6 +38,9 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+      - name: Wait for previous deployments
+        run: sleep 10s
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
