@@ -29,7 +29,8 @@ async function enviarCorreo() {
   }
 }
 
-// Define la función enviarCorreo globalmente
+// Haz que la función sea accesible globalmente
 window.enviarCorreo = enviarCorreo;
+
 
 
