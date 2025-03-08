@@ -1,4 +1,4 @@
-export async function enviarCorreo() {
+async function enviarCorreo() {
   const datos = {
     from_name: "Alfonso",
     to_name: "Receptor",
@@ -28,4 +28,8 @@ export async function enviarCorreo() {
     alert('Ocurrió un error al conectar con el servidor.');
   }
 }
+
+// Define la función enviarCorreo globalmente
+window.enviarCorreo = enviarCorreo;
+
 
