@@ -16,7 +16,7 @@ let expInfo = {
     'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Valor predeterminado
 };
 
-// Fetch para activar el servidor
+// Activar el servidor
 fetch('https://tareadetrazo.onrender.com')
   .then(response => console.log('Servidor activado:', response.status))
   .catch(error => console.error('Error al activar el servidor:', error));
@@ -24,19 +24,23 @@ fetch('https://tareadetrazo.onrender.com')
 // Obtener las claves sensibles desde el servidor
 let emailjsConfig = {};
 fetch('https://tareadetrazo.onrender.com/get-email-config')
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  })
   .then(config => {
     emailjsConfig = config;
     console.log('Configuración de EmailJS cargada:', emailjsConfig);
-    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con la clave obtenida
+    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con el userID proporcionado
   })
   .catch(error => {
     console.error('Error al cargar la configuración de EmailJS:', error);
-    alert('No se pudo cargar la configuración del servidor.');
+    alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
-// Start code blocks for 'Before Experiment'
-// init psychoJS:
+// Inicializar PsychoJS
 const psychoJS = new PsychoJS({
   debug: true
 });
@@ -119,14 +123,11 @@ async function updateInfo() {
 
 // Función para enviar los resultados del experimento por correo usando EmailJS
 function sendExperimentResults() {
-  // Obtener los datos del experimento
   let data = psychoJS.experiment._trialsData;
 
-  // Construir el contenido del mensaje con el formato solicitado
   let plainTextContent = `PARTICIPANTE (teléfono): ${expInfo['Escribe tu teléfono, por favor']}\n\n`;
   plainTextContent += `Test del Trazo - Tiempos fase A y B:\n\n`;
 
-  // Extraer los tiempos y almacenarlos en el formato correcto
   data.forEach(row => {
     if (row.Condition !== undefined) {
       let diferencia = (row['trial.stopped'] - row['trial.started']).toFixed(3);
@@ -141,23 +142,25 @@ function sendExperimentResults() {
       }
     }
   });
+
   plainTextContent += `\nSaludos`;
 
   let emailData = {
-      from_name: 'Tu Nombre',
-      to_name: 'investigacionmovil.uned@gmail.com',
-      subject: `TMT (1 Semana) - Teléfono: ${expInfo['Escribe tu teléfono, por favor']}`,
-      message: plainTextContent,
-      phone: expInfo['Escribe tu teléfono, por favor']
+    from_name: 'Tu Nombre',
+    to_name: 'investigacionmovil.uned@gmail.com',
+    subject: `TMT (1 Semana) - Teléfono: ${expInfo['Escribe tu teléfono, por favor']}`,
+    message: plainTextContent,
+    phone: expInfo['Escribe tu teléfono, por favor']
   };
 
   emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, emailData)
     .then(function(response) {
-        console.log('Correo electrónico enviado con éxito!', response.status, response.text);
-        alert('Message successfully sent!');
-    }, function(error) {
-        console.error('Error al enviar el correo electrónico:', error);
-        alert(`Failed to send the message: ${error.text}`);
+      console.log('Correo enviado con éxito:', response.status, response.text);
+      alert('Correo enviado exitosamente!');
+    })
+    .catch(function(error) {
+      console.error('Error al enviar el correo:', error);
+      alert(`Error al enviar el correo: ${error.text}`);
     });
 }
 
@@ -171,6 +174,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
