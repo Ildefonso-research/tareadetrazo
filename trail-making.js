@@ -98,7 +98,7 @@ async function updateInfo() {
 }
 
 // Inicializar EmailJS con tu Public Key
-emailjs.init('QKK_QxiN7uBpx-qbb');
+emailjs.init('TBEkDXRxGzCbRH6iu');
 
 // Función para enviar los resultados del experimento por correo usando EmailJS
 function sendExperimentResults() {
