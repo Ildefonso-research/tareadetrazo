@@ -17,23 +17,9 @@ let expInfo = {
 };
 
 // Activar el servidor
-fetch('https://tareadetrazo.onrender.com/get-email-config')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(config => {
-    emailjsConfig = config;
-    console.log('Configuración de EmailJS cargada:', emailjsConfig);
-    emailjs.init(emailjsConfig.userID);
-  })
-  .catch(error => {
-    console.error('Error al cargar la configuración de EmailJS:', error);
-    alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
-  });
-
+fetch('https://tareadetrazo.onrender.com')
+  .then(response => console.log('Servidor activado:', response.status))
+  .catch(error => console.error('Error al activar el servidor:', error));
 
 // Obtener las claves sensibles desde el servidor
 let emailjsConfig = {};
@@ -72,7 +58,10 @@ psychoJS.openWindow({
 // Programar el experimento:
 psychoJS.schedule(psychoJS.gui.DlgFromDict({
   dictionary: expInfo,
-  title: expName
+  title: expName,
+  message: "Por favor, escribe tu teléfono para comenzar el experimento.",
+  font: 'Lato',  // Usar una fuente personalizada para el diálogo
+  buttons: ['Ok', 'Cancel'], // Personaliza los botones si es necesario
 }));
 
 const flowScheduler = new Scheduler(psychoJS);
