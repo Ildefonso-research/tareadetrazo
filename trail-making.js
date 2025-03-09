@@ -83,6 +83,7 @@ async function showDialog() {
       dictionary: expInfo,
       title: expName
     });
+
     isValid = validatePhoneNumber(expInfo['Escribe tu teléfono, por favor']);
     if (!isValid) {
       alert('Por favor, ingresa un número de teléfono válido.');
@@ -209,6 +210,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
