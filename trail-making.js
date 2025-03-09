@@ -1,4 +1,4 @@
-﻿/********************* 
+/********************* 
  * Test-de-Trazo *
  *********************/
 
@@ -11,10 +11,29 @@ const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
 
 // Cambiar el nombre del experimento y los campos de entrada
-let expName = 'TEST DE TRAZO';  // from the Builder filename that created this script
+let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
-    'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Cambiamos el valor predeterminado a 'xxxxxxxxx'
+    'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Valor predeterminado
 };
+
+// Fetch para activar el servidor
+fetch('https://tareadetrazo.onrender.com')
+  .then(response => console.log('Servidor activado:', response.status))
+  .catch(error => console.error('Error al activar el servidor:', error));
+
+// Obtener las claves sensibles desde el servidor
+let emailjsConfig = {};
+fetch('https://tareadetrazo.onrender.com/get-email-config')
+  .then(response => response.json())
+  .then(config => {
+    emailjsConfig = config;
+    console.log('Configuración de EmailJS cargada:', emailjsConfig);
+    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con la clave obtenida
+  })
+  .catch(error => {
+    console.error('Error al cargar la configuración de EmailJS:', error);
+    alert('No se pudo cargar la configuración del servidor.');
+  });
 
 // Start code blocks for 'Before Experiment'
 // init psychoJS:
@@ -31,6 +50,7 @@ psychoJS.openWindow({
   backgroundImage: '',
   backgroundFit: 'none',
 });
+
 // Programar el experimento:
 psychoJS.schedule(psychoJS.gui.DlgFromDict({
   dictionary: expInfo,
@@ -97,9 +117,6 @@ async function updateInfo() {
   return Scheduler.Event.NEXT;
 }
 
-// Inicializar EmailJS con tu Public Key
-emailjs.init('TBEkDXRxGzCbRH6iu');
-
 // Función para enviar los resultados del experimento por correo usando EmailJS
 function sendExperimentResults() {
   // Obtener los datos del experimento
@@ -126,18 +143,15 @@ function sendExperimentResults() {
   });
   plainTextContent += `\nSaludos`;
 
-  // Aquí incluimos el objeto emailData que usará el template de EmailJS,
-  // en el que se utilizará la variable dinámica {{phone}} en el subject, por ejemplo:
   let emailData = {
-      from_name: 'Tu Nombre', // Reemplaza con tu nombre
+      from_name: 'Tu Nombre',
       to_name: 'investigacionmovil.uned@gmail.com',
-      subject: `TMT (1 Semana) - Teléfono: ${expInfo['Escribe tu teléfono, por favor']}`, // Incluimos el teléfono en el asunto
+      subject: `TMT (1 Semana) - Teléfono: ${expInfo['Escribe tu teléfono, por favor']}`,
       message: plainTextContent,
-      phone: expInfo['Escribe tu teléfono, por favor']  // Esta propiedad se inserta en el template donde tengas {{phone}}
+      phone: expInfo['Escribe tu teléfono, por favor']
   };
 
-  // Enviar el correo electrónico usando EmailJS
-  emailjs.send('service_x8u9zv9', 'template_2jq5dfb', emailData)
+  emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, emailData)
     .then(function(response) {
         console.log('Correo electrónico enviado con éxito!', response.status, response.text);
         alert('Message successfully sent!');
@@ -157,6 +171,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
