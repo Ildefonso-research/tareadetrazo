@@ -4,27 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>trail-making [PsychoPy]</title>
-    <!-- Styles -->
+    <!-- styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.css">
     <link rel="stylesheet" href="./lib/psychojs-2024.2.4.css">
   </head>
   <body>
     <div id="root"></div>
-    <!-- External libraries -->
+    <!-- external libraries -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/preloadjs@1.0.1/lib/preloadjs.min.js"></script>
-    <!-- EmailJS Library -->
+    <!-- EmailJS library -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-      // La inicialización de EmailJS se realiza dinámicamente desde el script del backend
-      console.log('Las configuraciones de EmailJS se manejarán en trail-making.js');
+     // Inicializar EmailJS con tu ID de usuario
+     emailjs.init('TBEkDXRxGzCbRH6iu'); // Reemplaza con tu ID de usuario de EmailJS
     </script>
-    <!-- Experiment Script -->
+    <!-- experiment -->
     <script src="./trail-making.js" type="module"></script>
-    <!-- Legacy Browsers Support -->
+    <!-- legacy browsers -->
     <script src="./lib/psychojs-2024.2.4.iife.js" nomodule></script>
     <script src="./trail-making-legacy-browsers.js" nomodule></script>
   </body>
 </html>
+
 
