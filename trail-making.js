@@ -75,8 +75,8 @@ function validatePhoneNumber(phoneNumber) {
   return phoneRegex.test(phoneNumber);
 }
 
-// Mostrar el cuadro de diálogo inicial con validación
-async function showDialog() {
+// Función para mostrar el cuadro de diálogo y validar el número de teléfono
+async function showDialogAndValidate() {
   let isValid = false;
   while (!isValid) {
     await psychoJS.gui.DlgFromDict({
@@ -92,7 +92,7 @@ async function showDialog() {
 }
 
 // Mostrar el cuadro de diálogo y luego continuar con el flujo normal
-showDialog().then(() => {
+showDialogAndValidate().then(() => {
   const flowScheduler = new Scheduler(psychoJS);
   const dialogCancelScheduler = new Scheduler(psychoJS);
   psychoJS.scheduleCondition(() => {
@@ -210,6 +210,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
