@@ -15,6 +15,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors()); // Habilita CORS
 app.use(bodyParser.json()); // Parsear datos JSON
 
+// no favicon
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end();
+});
+
 // Ruta para el raíz
 app.get('/', (req, res) => {
   res.send('¡El servidor está funcionando correctamente!');
