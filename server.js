@@ -47,15 +47,19 @@ app.post('/send-email', async (req, res) => {
 
 // Endpoint para proporcionar las configuraciones de EmailJS
 app.get('/get-email-config', (req, res) => {
-  const emailConfig = {
-    userID: process.env.EMAILJS_USER_ID,  // Usar nombres exactos de las variables de Render
-    serviceID: process.env.EMAILJS_SERVICE_ID,
-    templateID: process.env.EMAILJS_TEMPLATE_ID
-  };
-
-  // Devolver las configuraciones como JSON
-  res.json(emailConfig);
+  try {
+    const emailConfig = {
+      userID: process.env.EMAILJS_USER_ID,
+      serviceID: process.env.EMAILJS_SERVICE_ID,
+      templateID: process.env.EMAILJS_TEMPLATE_ID
+    };
+    res.json(emailConfig);
+  } catch (error) {
+    console.error('Error al obtener la configuración:', error);
+    res.status(500).json({ error: 'Error al obtener la configuración' });
+  }
 });
+
 
 // Iniciar el servidor
 app.listen(PORT, () => {
