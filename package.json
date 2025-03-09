@@ -1,0 +1,22 @@
+{
+  "name": "mi-proyecto",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "@emailjs/nodejs": "^5.0.2"
+  }
+}
+
+
