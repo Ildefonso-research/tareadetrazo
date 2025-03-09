@@ -527,7 +527,7 @@ function instrRoutineBegin(snapshot) {
     psychoJS.experiment.addData("Condition", Condition);
     
     //Actualizar las instrucciones
-    instrText.setText(("\n\n\nINSTRUCCIONES:\n\n1. Usa tu ratón para trazar una línea que conecte los círculos en el orden correcto.\n2. Hazlo lo más rápido posible.\n3. Sigue este orden: " + msg + ".\n4. Para empezar haz click en este círculo."));    // setup some python lists for storing info about the mouse
+    instrText.setText(("\n\n\n\n\n\nINSTRUCCIONES:\n\n1. Usa tu ratón para trazar una línea que conecte los círculos en el orden correcto.\n2. Hazlo lo más rápido posible.\n3. Sigue este orden: " + msg + ".\n4. Para empezar haz click en este círculo."));    // setup some python lists for storing info about the mouse
     // setup some python lists for storing info about the mouse
     mouse.clicked_name = [];
     gotValidClick = false; // until a click is received
