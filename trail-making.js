@@ -16,9 +16,6 @@ let expInfo = {
     'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Valor predeterminado
 };
 
-// Declarar `emailjsConfig` solo una vez
-let emailjsConfig = {};
-
 // Activar el servidor y cargar configuraciones de EmailJS
 fetch('https://tareadetrazo.onrender.com/get-email-config')
   .then(response => {
