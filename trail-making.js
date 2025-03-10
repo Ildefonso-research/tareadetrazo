@@ -126,7 +126,7 @@ psychoJS.start({
   resources: [
     // Resources:
     {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
-    {'name': 'error.wav', 'path': 'error.wav'} // Archivo de sonido de error
+    {'name': 'error.mp3', 'path': 'error.mp3'} // Archivo de sonido de error
   ]
 });
 
@@ -260,7 +260,7 @@ async function experimentInit() {
   // Inicializar el sonido de error
   errorSound = new sound.Sound({
     win: psychoJS.window,
-    value: 'error.wav', // Ruta al archivo de sonido
+    value: 'error.mp3', // Ruta al archivo de sonido
     secs: 1.0 // Duración del sonido
   });
 
