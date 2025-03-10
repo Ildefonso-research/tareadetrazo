@@ -21,7 +21,6 @@ let errorCountSampleA = 0;
 let errorCountA = 0;
 let errorCountSampleB = 0;
 let errorCountB = 0;
-let Idx = 0;
 
 console.log("Valor de Idx:", Idx); // Asegúrate de que tiene un valor válido
 
@@ -57,7 +56,6 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
   })
   .then(config => {
     emailjsConfig = config;
-    console.log('Configuración de EmailJS cargada:', emailjsConfig);
     emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con la clave de usuario
   })
   .catch(error => {
