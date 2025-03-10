@@ -21,6 +21,10 @@ let errorCountSampleA = 0;
 let errorCountA = 0;
 let errorCountSampleB = 0;
 let errorCountB = 0;
+let Idx = 0;
+
+console.log("Valor de Idx:", Idx); // Asegúrate de que tiene un valor válido
+
 
 // Variables para el flujo y configuraciones globales
 var currentLoop;
