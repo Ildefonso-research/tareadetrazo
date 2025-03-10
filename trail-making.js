@@ -15,10 +15,11 @@ let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
     'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Valor predeterminado
 };
+
+// Declarar `emailjsConfig` solo una vez
 let emailjsConfig = {};
 
-
-// Activar el servidor
+// Activar el servidor y cargar configuraciones de EmailJS
 fetch('https://tareadetrazo.onrender.com/get-email-config')
   .then(response => {
     if (!response.ok) {
@@ -27,14 +28,13 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     return response.json();
   })
   .then(config => {
-    emailjsConfig = config; // Solo guardar, sin registrarlo
-    emailjs.init(emailjsConfig.userID);
+    emailjsConfig = config; // Asignar configuraciones obtenidas
+    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con el userID
   })
-  .catch(() => {
-    alert('No se pudo cargar la configuración. Por favor, intenta más tarde.');
+  .catch(error => {
+    console.error('Error al cargar la configuración de EmailJS:', error);
+    alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
-
-
 
 // Obtener las claves sensibles desde el servidor
 let emailjsConfig = {};
