@@ -25,7 +25,7 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     return response.json();
   })
   .then(config => {
-    emailjsConfig = config;
+    emailjsConfig = { ...config }; // Copiar valores sin exponer
     emailjs.init(emailjsConfig.userID);
   })
   .catch(error => {
