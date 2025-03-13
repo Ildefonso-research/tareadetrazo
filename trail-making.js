@@ -6,22 +6,20 @@ import { core, data, sound, util, visual, hardware } from './lib/psychojs-2024.2
 const { PsychoJS } = core;
 const { TrialHandler, MultiStairHandler } = data;
 const { Scheduler } = util;
-// some handy aliases as in the psychopy scripts;
-const { abs, sin, cos, PI: pi, sqrt } = Math;
-const { round } = util;
 
-// Inicializar PsychoJS (debe hacerse primero)
+// Inicializar PsychoJS
 const psychoJS = new PsychoJS({
   debug: true
 });
 
-// Cambiar el nombre del experimento y los campos de entrada
+// Configuración básica del experimento
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
     'Escribe tu correo electrónico, por favor': '' // Campo inicial vacío
 };
 
 // Activar el servidor y cargar configuraciones de EmailJS
+let emailjsConfig = {};
 fetch('https://tareadetrazo.onrender.com/get-email-config')
   .then(response => {
     if (!response.ok) {
@@ -30,71 +28,49 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     return response.json();
   })
   .then(config => {
-    emailjsConfig = config; // Asignar configuraciones obtenidas
-    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con el userID
+    emailjsConfig = config; 
+    emailjs.init(emailjsConfig.userID); 
   })
   .catch(error => {
     console.error('Error al cargar la configuración de EmailJS:', error);
     alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
-// Obtener las claves sensibles desde el servidor
-let emailjsConfig = {};
-fetch('https://tareadetrazo.onrender.com/get-email-config')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(config => {
-    emailjsConfig = config;
-    emailjs.init(emailjsConfig.userID); // Inicializar EmailJS con el userID proporcionado
-  })
-  .catch(error => {
-    console.error('Error al cargar la configuración de EmailJS:', error);
-    alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
-  });
-
-// Mostrar cuadro de diálogo y realizar validación
-psychoJS.gui.DlgFromDict({
-    dictionary: expInfo,
-    title: expName
-}).then((buttonPressed) => {
-    if (buttonPressed === 'OK') {
-        const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
-        if (email === '') {
-            alert('Por favor, introduce tu correo electrónico para continuar.');
-            location.reload(); // Reinicia el experimento para volver a pedir el correo
-        } else {
-            psychoJS.start({
-                expName: expName,
-                expInfo: expInfo,
-                resources: [
-                    {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
-                ]
-            });
-        }
-    } else {
-        quitPsychoJS('El participante canceló el experimento.', false);
-    }
-});
-
-// Abrir la ventana (debe hacerse después de inicializar PsychoJS)
+// Abrir la ventana del experimento
 psychoJS.openWindow({
   fullscr: true,
-  color: new util.Color([(- 0.67), (- 0.67), (- 0.67)]),
+  color: new util.Color([-0.67, -0.67, -0.67]),
   units: 'height',
   waitBlanking: true,
   backgroundImage: '',
   backgroundFit: 'none',
 });
 
+// Configuración del flujo del experimento
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
-psychoJS.scheduleCondition(function() { return (psychoJS.gui.dialogComponent.button === 'OK'); }, flowScheduler, dialogCancelScheduler);
 
-// flowScheduler se ejecuta si los participantes presionan OK
+// Mostrar cuadro de diálogo inicial
+psychoJS.schedule(() => {
+  psychoJS.gui.DlgFromDict({
+    dictionary: expInfo,
+    title: expName
+  });
+
+  return Scheduler.Event.NEXT;
+});
+
+// Validar el contenido del correo antes de continuar
+psychoJS.schedule(() => {
+  const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
+  if (email === '') {
+    alert('Por favor, introduce tu correo electrónico para continuar.');
+    return Scheduler.Event.QUIT; // Finaliza el flujo si el correo está vacío
+  }
+  return Scheduler.Event.NEXT; // Continúa si el correo es válido
+});
+
+// Configurar el flujo principal
 flowScheduler.add(updateInfo); // Añadir timeStamp
 flowScheduler.add(experimentInit);
 flowScheduler.add(setupRoutineBegin());
@@ -108,40 +84,50 @@ flowScheduler.add(trialsLoopEnd);
 flowScheduler.add(thanksRoutineBegin());
 flowScheduler.add(thanksRoutineEachFrame());
 flowScheduler.add(thanksRoutineEnd());
-flowScheduler.add(endExperiment); // Asegúrate de que esta línea está presente para llamar a endExperiment
+flowScheduler.add(endExperiment);
 flowScheduler.add(quitPsychoJS, '', true);
 
-// Terminar si el usuario presiona Cancelar en el cuadro de diálogo:
+// Configurar la cancelación en caso de que el cuadro de diálogo se cierre
 dialogCancelScheduler.add(quitPsychoJS, '', false);
+
+// Iniciar PsychoJS
+psychoJS.start({
+  expName: expName,
+  expInfo: expInfo,
+  resources: [
+    {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
+  ]
+});
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.EXP);
 
+// Funciones auxiliares
 var currentLoop;
 var frameDur;
+
 async function updateInfo() {
-  currentLoop = psychoJS.experiment;  // right now there are no loops
-  expInfo['date'] = util.MonotonicClock.getDateStr();  // añadir un simple timestamp
+  currentLoop = psychoJS.experiment; // Mantener referencias de bucles
+  expInfo['date'] = util.MonotonicClock.getDateStr(); // Timestamp simple
   expInfo['expName'] = expName;
-  expInfo['psychopyVersion'] = '2024.2.4';
   expInfo['OS'] = window.navigator.platform;
 
-  // Almacenar la tasa de fotogramas del monitor si podemos medirla con éxito
+  // Guardar la tasa de fotogramas
   expInfo['frameRate'] = psychoJS.window.getActualFrameRate();
-  if (typeof expInfo['frameRate'] !== 'undefined')
+  if (typeof expInfo['frameRate'] !== 'undefined') {
     frameDur = 1.0 / Math.round(expInfo['frameRate']);
-  else
-    frameDur = 1.0 / 60.0; // no pudimos obtener una medida confiable, así que adivinamos
+  } else {
+    frameDur = 1.0 / 60.0; // Valor predeterminado si no se puede medir la tasa
+  }
 
-  // Añadir información desde la URL:
+  // Añadir información desde la URL
   util.addInfoFromUrl(expInfo);
 
+  // Configuración del nombre del archivo de datos
   psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["Escribe tu correo electrónico, por favor"]}_${expName}_${expInfo["date"]}`);
-  psychoJS.experiment.field_separator = '\t';
-
   return Scheduler.Event.NEXT;
 }
 
-// Función para enviar los resultados del experimento por correo usando EmailJS
+// Función para finalizar el experimento y enviar resultados
 function sendExperimentResults() {
   let data = psychoJS.experiment._trialsData;
 
@@ -184,16 +170,22 @@ function sendExperimentResults() {
     });
 }
 
-// Función para finalizar el experimento
 function endExperiment() {
   console.log('Experimento finalizado.');
-  sendExperimentResults(); // Llamar a la función para enviar los resultados del experimento
+  sendExperimentResults(); // Llamar para enviar los resultados del experimento
   psychoJS.experiment.save();
   psychoJS.quit({
     message: 'Gracias por tu paciencia. ¡Acabas de completar todas las pruebas!',
     isCompleted: true
   });
 }
+
+function quitPsychoJS(message, isCompleted) {
+  psychoJS.experiment.save();
+  psychoJS.quit({ message, isCompleted });
+  return Scheduler.Event.QUIT;
+}
+
 
 
 
