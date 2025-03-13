@@ -180,11 +180,7 @@ function endExperiment() {
   });
 }
 
-function quitPsychoJS(message, isCompleted) {
-  psychoJS.experiment.save();
-  psychoJS.quit({ message, isCompleted });
-  return Scheduler.Event.QUIT;
-}
+
 
 
 
@@ -981,13 +977,23 @@ function importConditions(currentLoop) {
 
 
 async function quitPsychoJS(message, isCompleted) {
-  // Check for and save orphaned data
+  // Verificar y guardar datos pendientes
   if (psychoJS.experiment.isEntryEmpty()) {
     psychoJS.experiment.nextEntry();
   }
+
+  // Restaurar el cursor por defecto
   document.documentElement.style.cursor = 'auto';
+
+  // Cerrar la ventana de PsychoJS
   psychoJS.window.close();
-  psychoJS.quit({message: message, isCompleted: isCompleted});
-  
+
+  // Finalizar el experimento y guardar los datos
+  await psychoJS.quit({
+    message: message,
+    isCompleted: isCompleted
+  });
+
   return Scheduler.Event.QUIT;
 }
+
