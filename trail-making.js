@@ -10,6 +10,11 @@ const { Scheduler } = util;
 const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
 
+// Inicializar PsychoJS (debe hacerse primero)
+const psychoJS = new PsychoJS({
+  debug: true
+});
+
 // Cambiar el nombre del experimento y los campos de entrada
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
@@ -75,12 +80,7 @@ psychoJS.gui.DlgFromDict({
     }
 });
 
-// Inicializar PsychoJS
-const psychoJS = new PsychoJS({
-  debug: true
-});
-
-// Abrir la ventana:
+// Abrir la ventana (debe hacerse después de inicializar PsychoJS)
 psychoJS.openWindow({
   fullscr: true,
   color: new util.Color([(- 0.67), (- 0.67), (- 0.67)]),
