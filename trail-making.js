@@ -10,6 +10,11 @@ const { Scheduler } = util;
 const { abs, sin, cos, PI: pi, sqrt } = Math;
 const { round } = util;
 
+// Inicializar PsychoJS (debe hacerse primero)
+const psychoJS = new PsychoJS({
+  debug: true
+});
+
 // Cambiar el nombre del experimento y los campos de entrada
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
@@ -51,22 +56,31 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
-// Validar el contenido del correo antes de continuar
-function validarCampo() {
-    const email = expInfo['Escribe tu correo electrónico, por favor'];
-    if (email.trim() === '') {
-        alert('Por favor, introduce tu correo electrónico para continuar.');
-        return false; // Esto detiene el avance si el campo está vacío
+// Mostrar cuadro de diálogo y realizar validación
+psychoJS.gui.DlgFromDict({
+    dictionary: expInfo,
+    title: expName
+}).then((buttonPressed) => {
+    if (buttonPressed === 'OK') {
+        const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
+        if (email === '') {
+            alert('Por favor, introduce tu correo electrónico para continuar.');
+            location.reload(); // Reinicia el experimento para volver a pedir el correo
+        } else {
+            psychoJS.start({
+                expName: expName,
+                expInfo: expInfo,
+                resources: [
+                    {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
+                ]
+            });
+        }
+    } else {
+        quitPsychoJS('El participante canceló el experimento.', false);
     }
-    return true; // Permitir continuar si el correo tiene contenido
-}
-
-// Inicializar PsychoJS
-const psychoJS = new PsychoJS({
-  debug: true
 });
 
-// Abrir la ventana:
+// Abrir la ventana (debe hacerse después de inicializar PsychoJS)
 psychoJS.openWindow({
   fullscr: true,
   color: new util.Color([(- 0.67), (- 0.67), (- 0.67)]),
@@ -74,22 +88,6 @@ psychoJS.openWindow({
   waitBlanking: true,
   backgroundImage: '',
   backgroundFit: 'none',
-});
-
-// Programar el experimento:
-psychoJS.schedule(psychoJS.gui.DlgFromDict({
-  dictionary: expInfo,
-  title: expName
-}));
-
-// Validar antes de continuar
-psychoJS.scheduleCondition(function() {
-    const email = expInfo['Escribe tu correo electrónico, por favor'];
-    if (email.trim() === '') {
-        alert('Por favor, introduce tu correo electrónico para continuar.');
-        return false; // Detener si el campo está vacío
-    }
-    return true; // Continuar si el campo tiene contenido
 });
 
 const flowScheduler = new Scheduler(psychoJS);
@@ -115,15 +113,6 @@ flowScheduler.add(quitPsychoJS, '', true);
 
 // Terminar si el usuario presiona Cancelar en el cuadro de diálogo:
 dialogCancelScheduler.add(quitPsychoJS, '', false);
-
-psychoJS.start({
-  expName: expName,
-  expInfo: expInfo,
-  resources: [
-    // resources:
-    {'name': 'conditions.xlsx', 'path': 'conditions.xlsx'},
-  ]
-});
 
 psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.EXP);
 
@@ -205,6 +194,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
