@@ -13,7 +13,7 @@ const { round } = util;
 // Cambiar el nombre del experimento y los campos de entrada
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
-    'Escribe tu teléfono, por favor': 'xxxxxxxxx' // Valor predeterminado
+  'Escribe tu correo electrónico, por favor': 'tu_correo@ejemplo.com' // Valor predeterminado
 };
 
 // Activar el servidor y cargar configuraciones de EmailJS
@@ -136,7 +136,7 @@ async function updateInfo() {
 function sendExperimentResults() {
   let data = psychoJS.experiment._trialsData;
 
-  let plainTextContent = `PARTICIPANTE (teléfono): ${expInfo['Escribe tu teléfono, por favor']}\n\n`;
+  let plainTextContent = `PARTICIPANTE (correo): ${expInfo['Escribe tu correo electrónico, por favor']}\n\n`;
   plainTextContent += `Test del Trazo - Tiempos fase A y B:\n\n`;
 
   data.forEach(row => {
@@ -159,10 +159,11 @@ function sendExperimentResults() {
   let emailData = {
     from_name: 'Tu Nombre',
     to_name: 'investigacionmovil.uned@gmail.com',
-    subject: `TMT (1 Semana) - Teléfono: ${expInfo['Escribe tu teléfono, por favor']}`,
+    subject: `TMT (1 Semana) - Correo: ${expInfo['Escribe tu correo electrónico, por favor']}`,
     message: plainTextContent,
-    phone: expInfo['Escribe tu teléfono, por favor']
+    email: expInfo['Escribe tu correo electrónico, por favor']
   };
+
 
   emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, emailData)
     .then(function(response) {
@@ -403,6 +404,12 @@ function setupRoutineEachFrame() {
 }
 
 
+
+
+
+
+
+
 function setupRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'setup' ---
@@ -545,6 +552,14 @@ function instrRoutineBegin(snapshot) {
 }
 
 
+
+
+
+
+
+
+
+
 var prevButtonState;
 var _mouseButtons;
 function instrRoutineEachFrame() {
@@ -654,6 +669,15 @@ function instrRoutineEachFrame() {
 }
 
 
+
+
+
+
+
+
+
+
+
 function instrRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'instr' ---
@@ -674,7 +698,6 @@ function instrRoutineEnd(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 var trialMaxDurationReached;
 var trialStep;
@@ -726,7 +749,6 @@ function trialRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 var CursorTargetDistance;
 function trialRoutineEachFrame() {
@@ -799,7 +821,6 @@ function trialRoutineEachFrame() {
   };
 }
 
-
 var _mouseXYs;
 function trialRoutineEnd(snapshot) {
   return async function () {
@@ -840,7 +861,6 @@ function trialRoutineEnd(snapshot) {
   }
 }
 
-
 var thanksMaxDurationReached;
 var thanksMaxDuration;
 var thanksComponents;
@@ -868,6 +888,15 @@ function thanksRoutineBegin(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
+
+
+
+
+
+
+
+
+
 
 
 var frameRemains;
@@ -919,7 +948,6 @@ function thanksRoutineEachFrame() {
   };
 }
 
-
 function thanksRoutineEnd(snapshot) {
   return async function () {
     //--- Ending Routine 'thanks' ---
@@ -941,7 +969,6 @@ function thanksRoutineEnd(snapshot) {
     return Scheduler.Event.NEXT;
   }
 }
-
 
 function importConditions(currentLoop) {
   return async function () {
