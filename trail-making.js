@@ -66,11 +66,32 @@ psychoJS.openWindow({
   backgroundFit: 'none',
 });
 
-// Programar el experimento:
+let expInfo = {
+  'Escribe tu correo electrónico, por favor': '' // Deja el campo vacío inicialmente
+};
+
+
+
+// Crear una función personalizada para verificar el contenido del correo electrónico
+function validarCampo() {
+  const email = expInfo['Escribe tu correo electrónico, por favor'];
+  if (email.trim() === '') {
+      alert('Por favor, introduce tu correo electrónico para continuar.');
+      return false;
+  }
+  return true;
+}
+
+// Programar el cuadro de diálogo con validación
 psychoJS.schedule(psychoJS.gui.DlgFromDict({
   dictionary: expInfo,
   title: expName
+}).then((buttonPressed) => {
+  if (buttonPressed === 'OK' && !validarCampo()) {
+      return quitPsychoJS('El campo de correo está vacío. Por favor, completa el campo.', false);
+  }
 }));
+
 
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
