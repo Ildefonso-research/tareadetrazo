@@ -13,7 +13,7 @@ const { round } = util;
 // Cambiar el nombre del experimento y los campos de entrada
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
-  'Escribe tu correo electrónico, por favor': 'tu_correo@ejemplo.com' // Valor predeterminado
+    'Escribe tu correo electrónico, por favor': '' // Campo inicial vacío
 };
 
 // Activar el servidor y cargar configuraciones de EmailJS
@@ -51,6 +51,16 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
+// Validar el contenido del correo antes de continuar
+function validarCampo() {
+    const email = expInfo['Escribe tu correo electrónico, por favor'];
+    if (email.trim() === '') {
+        alert('Por favor, introduce tu correo electrónico para continuar.');
+        return false; // Esto detiene el avance si el campo está vacío
+    }
+    return true; // Permitir continuar si el correo tiene contenido
+}
+
 // Inicializar PsychoJS
 const psychoJS = new PsychoJS({
   debug: true
@@ -66,29 +76,21 @@ psychoJS.openWindow({
   backgroundFit: 'none',
 });
 
-
-
-
-// Crear una función personalizada para verificar el contenido del correo electrónico
-function validarCampo() {
-  const email = expInfo['Escribe tu correo electrónico, por favor'];
-  if (email.trim() === '') {
-      alert('Por favor, introduce tu correo electrónico para continuar.');
-      return false;
-  }
-  return true;
-}
-
-// Programar el cuadro de diálogo con validación
+// Programar el experimento:
 psychoJS.schedule(psychoJS.gui.DlgFromDict({
   dictionary: expInfo,
   title: expName
-}).then((buttonPressed) => {
-  if (buttonPressed === 'OK' && !validarCampo()) {
-      return quitPsychoJS('El campo de correo está vacío. Por favor, completa el campo.', false);
-  }
 }));
 
+// Validar antes de continuar
+psychoJS.scheduleCondition(function() {
+    const email = expInfo['Escribe tu correo electrónico, por favor'];
+    if (email.trim() === '') {
+        alert('Por favor, introduce tu correo electrónico para continuar.');
+        return false; // Detener si el campo está vacío
+    }
+    return true; // Continuar si el campo tiene contenido
+});
 
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
@@ -144,7 +146,7 @@ async function updateInfo() {
   // Añadir información desde la URL:
   util.addInfoFromUrl(expInfo);
 
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["Escribe tu correo electrónico, por favor"]}_${expName}_${expInfo["date"]}`);
   psychoJS.experiment.field_separator = '\t';
 
   return Scheduler.Event.NEXT;
@@ -182,7 +184,6 @@ function sendExperimentResults() {
     email: expInfo['Escribe tu correo electrónico, por favor']
   };
 
-
   emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, emailData)
     .then(function(response) {
       console.log('Correo enviado con éxito:', response.status, response.text);
@@ -204,6 +205,7 @@ function endExperiment() {
     isCompleted: true
   });
 }
+
 
 
 
