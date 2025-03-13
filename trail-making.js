@@ -66,9 +66,6 @@ psychoJS.openWindow({
   backgroundFit: 'none',
 });
 
-let expInfo = {
-  'Escribe tu correo electrónico, por favor': '' // Deja el campo vacío inicialmente
-};
 
 
 
