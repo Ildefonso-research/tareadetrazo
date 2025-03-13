@@ -50,15 +50,27 @@ psychoJS.openWindow({
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
 
-// Mostrar cuadro de diálogo inicial
-psychoJS.schedule(() => {
-  psychoJS.gui.DlgFromDict({
+psychoJS.schedule(async () => {
+  // Mostrar el cuadro de diálogo para introducir datos
+  const dialogResult = await psychoJS.gui.DlgFromDict({
     dictionary: expInfo,
     title: expName
   });
 
-  return Scheduler.Event.NEXT;
+  // Verificar si el usuario presionó "OK" o cerró el cuadro de diálogo
+  if (dialogResult.button === 'OK') {
+    const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
+    if (email === '') {
+      alert('Por favor, introduce tu correo electrónico para continuar.');
+      location.reload(); // Reiniciar el experimento si el correo está vacío
+    } else {
+      return Scheduler.Event.NEXT; // Continúa si el correo es válido
+    }
+  } else {
+    quitPsychoJS('El usuario canceló el experimento.', false); // Salir si cancela
+  }
 });
+
 
 // Validar el contenido del correo antes de continuar
 psychoJS.schedule(() => {
