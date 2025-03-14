@@ -149,6 +149,8 @@ async function quitPsychoJS(message, isCompleted) {
 }
 
 
+
+
 // Función para finalizar el experimento
 function endExperiment() {
   console.log('Experimento finalizado.');
@@ -996,14 +998,3 @@ function importConditions(currentLoop) {
 }
 
 
-async function quitPsychoJS(message, isCompleted) {
-  // Check for and save orphaned data
-  if (psychoJS.experiment.isEntryEmpty()) {
-    psychoJS.experiment.nextEntry();
-  }
-  document.documentElement.style.cursor = 'auto';
-  psychoJS.window.close();
-  psychoJS.quit({message: message, isCompleted: isCompleted});
-  
-  return Scheduler.Event.QUIT;
-}
