@@ -98,7 +98,6 @@ flowScheduler.add(endExperiment);
 flowScheduler.add(quitPsychoJS, '', true);
 
 // Manejo del botón "Cancelar" en el diálogo
-const dialogCancelScheduler = new Scheduler(psychoJS);
 dialogCancelScheduler.add(quitPsychoJS, '', false);
 
 // Iniciar el flujo del experimento
