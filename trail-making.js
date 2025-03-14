@@ -13,7 +13,7 @@ const { round } = util;
 // Cambiar el nombre del experimento y los campos de entrada
 let expName = 'TEST DE TRAZO'; // Nombre del experimento
 let expInfo = {
-    'Escribe tu correo electrónico, por favor': '' // Campo inicial vacío
+  'Escribe tu correo electrónico, por favor': 'tu_correo@ejemplo.com' // Valor predeterminado
 };
 
 // Activar el servidor y cargar configuraciones de EmailJS
@@ -51,15 +51,6 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
-// Validar el contenido del correo antes de continuar
-function validarCampo() {
-    const email = expInfo['Escribe tu correo electrónico, por favor'];
-    if (email.trim() === '') {
-        alert('Por favor, introduce tu correo electrónico para continuar.');
-        location.reload(); // Reiniciar todo el experimento si el campo está vacío
-    }
-}
-
 // Inicializar PsychoJS
 const psychoJS = new PsychoJS({
   debug: true
@@ -68,7 +59,7 @@ const psychoJS = new PsychoJS({
 // Abrir la ventana:
 psychoJS.openWindow({
   fullscr: true,
-  color: new util.Color([-0.67, -0.67, -0.67]),
+  color: new util.Color([(- 0.67), (- 0.67), (- 0.67)]),
   units: 'height',
   waitBlanking: true,
   backgroundImage: '',
@@ -76,26 +67,14 @@ psychoJS.openWindow({
 });
 
 // Programar el experimento:
-psychoJS.schedule(() => {
-  psychoJS.gui.DlgFromDict({
-    dictionary: expInfo,
-    title: expName
-  });
-
-  return Scheduler.Event.NEXT;
-});
-
-// Validar antes de continuar
-psychoJS.schedule(() => {
-    validarCampo(); // Validar el correo antes de continuar
-    return Scheduler.Event.NEXT;
-});
+psychoJS.schedule(psychoJS.gui.DlgFromDict({
+  dictionary: expInfo,
+  title: expName
+}));
 
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
-psychoJS.scheduleCondition(() => {
-  return (psychoJS.gui.dialogComponent.button === 'OK');
-}, flowScheduler, dialogCancelScheduler);
+psychoJS.scheduleCondition(function() { return (psychoJS.gui.dialogComponent.button === 'OK'); }, flowScheduler, dialogCancelScheduler);
 
 // flowScheduler se ejecuta si los participantes presionan OK
 flowScheduler.add(updateInfo); // Añadir timeStamp
@@ -130,7 +109,6 @@ psychoJS.experimentLogger.setLevel(core.Logger.ServerLevel.EXP);
 
 var currentLoop;
 var frameDur;
-
 async function updateInfo() {
   currentLoop = psychoJS.experiment;  // right now there are no loops
   expInfo['date'] = util.MonotonicClock.getDateStr();  // añadir un simple timestamp
@@ -148,7 +126,7 @@ async function updateInfo() {
   // Añadir información desde la URL:
   util.addInfoFromUrl(expInfo);
 
-  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["Escribe tu correo electrónico, por favor"]}_${expName}_${expInfo["date"]}`);
+  psychoJS.experiment.dataFileName = (("." + "/") + `data/${expInfo["participant"]}_${expName}_${expInfo["date"]}`);
   psychoJS.experiment.field_separator = '\t';
 
   return Scheduler.Event.NEXT;
@@ -186,6 +164,7 @@ function sendExperimentResults() {
     email: expInfo['Escribe tu correo electrónico, por favor']
   };
 
+
   emailjs.send(emailjsConfig.serviceID, emailjsConfig.templateID, emailData)
     .then(function(response) {
       console.log('Correo enviado con éxito:', response.status, response.text);
@@ -207,13 +186,6 @@ function endExperiment() {
     isCompleted: true
   });
 }
-
-
-
-
-
-
-
 
 
 
