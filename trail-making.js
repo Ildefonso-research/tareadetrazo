@@ -34,15 +34,15 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
     alert('No se pudo cargar la configuración del servidor. Por favor, intenta más tarde.');
   });
 
-// Validar el contenido del correo antes de continuar
-function validarCorreo() {
+// Validar el correo electrónico después de que el cuadro se completa
+psychoJS.schedule(() => {
   const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
   if (email === '') {
-      alert('Por favor, introduce tu correo electrónico para continuar.');
-      return false; // Si está vacío, no avanzar
+    alert('Por favor, introduce tu correo electrónico para continuar.');
+    return Scheduler.Event.REPEAT; // Si está vacío, repetir la pantalla
   }
-  return true; // Permitir continuar si el correo tiene contenido
-}
+  return Scheduler.Event.NEXT; // Continuar si es válido
+});
 
 // Inicializar PsychoJS
 const psychoJS = new PsychoJS({
