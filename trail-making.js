@@ -944,24 +944,3 @@ function importConditions(currentLoop) {
 }
 
 
-async function quitPsychoJS(message, isCompleted) {
-  // Verificar y guardar datos pendientes
-  if (psychoJS.experiment.isEntryEmpty()) {
-    psychoJS.experiment.nextEntry();
-  }
-
-  // Restaurar el cursor por defecto
-  document.documentElement.style.cursor = 'auto';
-
-  // Cerrar la ventana de PsychoJS
-  psychoJS.window.close();
-
-  // Finalizar el experimento y guardar los datos
-  await psychoJS.quit({
-    message: message,
-    isCompleted: isCompleted
-  });
-
-  return Scheduler.Event.QUIT;
-}
-
