@@ -148,11 +148,16 @@ async function quitPsychoJS(message, isCompleted) {
   return Scheduler.Event.QUIT;
 }
 
+
+// Función para finalizar el experimento
 function endExperiment() {
   console.log('Experimento finalizado.');
   sendExperimentResults(); // Llamar a la función para enviar los resultados del experimento
   psychoJS.experiment.save();
-  quitPsychoJS('Gracias por participar en el experimento.', true);
+  psychoJS.quit({
+    message: 'Gracias por tu paciencia. ¡Acabas de completar todas las pruebas!',
+    isCompleted: true
+  });
 }
 
 function sendExperimentResults() {
@@ -196,22 +201,6 @@ function sendExperimentResults() {
       alert(`Error al enviar el correo: ${error.text}`);
     });
 }
-
-
-// Función para finalizar el experimento
-function endExperiment() {
-  console.log('Experimento finalizado.');
-  sendExperimentResults(); // Llamar a la función para enviar los resultados del experimento
-  psychoJS.experiment.save();
-  psychoJS.quit({
-    message: 'Gracias por tu paciencia. ¡Acabas de completar todas las pruebas!',
-    isCompleted: true
-  });
-}
-
-
-
-
 
 
 
