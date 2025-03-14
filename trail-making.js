@@ -35,11 +35,11 @@ fetch('https://tareadetrazo.onrender.com/get-email-config')
   });
 
 // Validar el contenido del correo antes de continuar
-function validarCampo() {
-  const email = expInfo['Escribe tu correo electrónico, por favor'];
-  if (email.trim() === '') {
-    alert('Por favor, introduce tu correo electrónico para continuar.');
-    return false; // Evitar avanzar en el flujo
+function validarCorreo() {
+  const email = expInfo['Escribe tu correo electrónico, por favor'].trim();
+  if (email === '') {
+      alert('Por favor, introduce tu correo electrónico para continuar.');
+      return false; // Si está vacío, no avanzar
   }
   return true; // Permitir continuar si el correo tiene contenido
 }
@@ -61,20 +61,20 @@ psychoJS.openWindow({
 
 // Programar el cuadro de diálogo inicial
 psychoJS.schedule(async () => {
-  let dialogResult = null;
-  do {
-    dialogResult = await psychoJS.gui.DlgFromDict({
+  let correoValido = false;
+  while (!correoValido) {
+    const dialogResult = await psychoJS.gui.DlgFromDict({
       dictionary: expInfo,
-      title: expName
+      title: expName,
     });
 
     if (dialogResult.button === 'Cancel') {
-      quitPsychoJS('El usuario canceló el experimento.', false);
-      return Scheduler.Event.QUIT; // Finaliza el experimento si se presiona "Cancelar"
+      quitPsychoJS('El usuario canceló el experimento.', false); // Salir si presiona "Cancelar"
+      return Scheduler.Event.QUIT;
     }
-  } while (!validarCampo()); // Repite el cuadro de diálogo hasta que el correo sea válido
-
-  return Scheduler.Event.NEXT; // Continúa el flujo del experimento
+    correoValido = validarCorreo(); // Validar el correo
+  }
+  return Scheduler.Event.NEXT; // Continuar si el correo es válido
 });
 
 // Configurar el flujo principal del experimento
@@ -97,7 +97,8 @@ flowScheduler.add(thanksRoutineEnd());
 flowScheduler.add(endExperiment);
 flowScheduler.add(quitPsychoJS, '', true);
 
-// Configurar el manejo del botón "Cancelar" en el cuadro de diálogo
+// Manejo del botón "Cancelar" en el diálogo
+const dialogCancelScheduler = new Scheduler(psychoJS);
 dialogCancelScheduler.add(quitPsychoJS, '', false);
 
 // Iniciar el flujo del experimento
